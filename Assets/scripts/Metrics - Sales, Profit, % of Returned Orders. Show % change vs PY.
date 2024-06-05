@@ -1,0 +1,37 @@
+-- Calculate metrics for 2023 (current year)
+WITH CurrentYearMetrics AS (
+    SELECT 
+        SUM(Sales) AS CurrentYearSales,
+        SUM(Profit) AS CurrentYearProfit,
+        SUM(CASE WHEN Profit < 0 THEN 1 ELSE 0 END) AS ReturnedOrders
+    FROM [dbo].[Sample - Superstore]
+    WHERE YEAR(Order_Date) = 2023 -- Filter for 2023 data
+),
+-- Calculate metrics for 2022 (previous year)
+PreviousYearMetrics AS (
+    SELECT 
+        SUM(Sales) AS PreviousYearSales,
+        SUM(Profit) AS PreviousYearProfit,
+        SUM(CASE WHEN Profit < 0 THEN 1 ELSE 0 END) AS PreviousYearReturnedOrders
+    FROM [dbo].[Sample - Superstore]
+    WHERE YEAR(Order_Date) = 2022 -- Filter for 2022 data
+)
+-- Combine both years' metrics and calculate percentage change
+SELECT 
+    CurrentYearSales,
+    CurrentYearProfit,
+    CAST((ReturnedOrders * 100.0 / NULLIF(CurrentYearSales, 0)) AS DECIMAL(5, 2)) AS ReturnedOrdersPercentage,
+    CASE 
+        WHEN PreviousYearSales IS NULL THEN NULL
+        ELSE ((CurrentYearSales - PreviousYearSales) * 100.0 / PreviousYearSales)
+    END AS SalesPercentageChange,
+    CASE 
+        WHEN PreviousYearProfit IS NULL THEN NULL
+        ELSE ((CurrentYearProfit - PreviousYearProfit) * 100.0 / PreviousYearProfit)
+    END AS ProfitPercentageChange,
+    CASE 
+        WHEN PreviousYearReturnedOrders IS NULL THEN NULL
+        ELSE (((ReturnedOrders - PreviousYearReturnedOrders) * 100.0) / PreviousYearReturnedOrders)
+    END AS ReturnedOrdersPercentageChange
+FROM CurrentYearMetrics
+CROSS JOIN PreviousYearMetrics;
