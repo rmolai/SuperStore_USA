@@ -1,6 +1,12 @@
 # Data Portfolio: Superstore Sales Analysis
 
-![Dashboard-] (Assets/images/superstore_to_powerbi.gif)
+
+
+![powerbi-animated-dashboard](Assets/images/superstore_to_powerbi.gif)
+
+
+
+
 
 # Table of contents
 
