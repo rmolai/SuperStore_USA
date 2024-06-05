@@ -88,7 +88,6 @@ The following visuals may be appropriate to answer our questions:
 3. Line Chart: Sales and profit trends over time
 4. Pie Chart: Sales and profit by customer segment
 
-![Dashboard-Mockup](assets/images/superstore_dashboard_mockup.png)
 
 ## Tools
 
@@ -145,6 +144,8 @@ Initial observations about the dataset:
 | Profit            | FLOAT     | NO       |
 
 ### Cleaning Steps
+
+![Data Cleaning-](Assets/images/Data Quality1.png)
 
 1. Remove unnecessary columns.
 2. Rename columns using aliases.
