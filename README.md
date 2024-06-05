@@ -57,6 +57,8 @@ As a Sales Manager, I want to use a dashboard that provides detailed insights in
 
 # Data Source
 
+![Data Source-](Assets/images/Data Source.png)
+
 - **What data is needed to achieve our objective?**
   - Sales data
   - Product data
@@ -179,9 +181,23 @@ FROM
 To calculate important metrics in Power BI, we can create the following DAX measures:
 
 ```
-Total Sales = SUM(clean_superstore_sales[sales])
-Total Profit = SUM(clean_superstore_sales[profit])
-Profit Margin % = DIVIDE(SUM(clean_superstore_sales[profit]), SUM(clean_superstore_sales[sales]), 0)
+Metrics - Sales, Profit, Show % change vs PY:
+
+Sales = SUM('Sample - Superstore'[Sales])
+Profit = SUM('Sample - Superstore'[Profit])
+
+Sales % Change vs PY =
+VAR CurrentYearSales = [Sales]
+VAR PreviousYearSales = CALCULATE([Sales], SAMEPERIODLASTYEAR('Date'[Order Date]))
+RETURN
+IF(ISBLANK(PreviousYearSales), BLANK(), (CurrentYearSales - PreviousYearSales) / PreviousYearSales)
+
+Compare Sales performance versus previous year over time: 
+
+Sales by Month = SUM('Sample - Superstore'[Sales])
+
+Sales Previous Year = CALCULATE([Sales], SAMEPERIODLASTYEAR('Date'[Order Date]))
+
 ```
 
 These measures can be used in various visuals and calculations within the Power BI dashboard.
@@ -202,7 +218,9 @@ After visualizing the data in Power BI, we can derive the following key findings
 
 3. **Trends Over Time:**
    - Sales and profit have been steadily increasing over the past few years.
-   - There is a noticeable spike in sales and profit during the fourth quarter (Q4) of each year.
+   - There is a noticeable spike in sales  during the fourth quarter (Q4) of each year.
+
+![Data Cleaning-](Assets/images/Sales.png)
 
 4. **Customer Segments:**
    - The "Consumer" segment accounts for the largest portion of sales and profit.
