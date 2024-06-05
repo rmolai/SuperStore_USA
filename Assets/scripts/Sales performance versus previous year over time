@@ -1,0 +1,31 @@
+WITH SalesComparison AS (
+    -- Total sales for each month in 2023 (current year)
+    SELECT 
+        MONTH(Order_Date) AS OrderMonth,
+        YEAR(Order_Date) AS OrderYear,
+        SUM(Sales) AS CurrentYearSales
+    FROM [dbo].[Sample - Superstore]
+    WHERE YEAR(Order_Date) = 2023
+    GROUP BY MONTH(Order_Date), YEAR(Order_Date)
+),
+PreviousYearSales AS (
+    -- Total sales for each month in 2022 (previous year)
+    SELECT 
+        MONTH(Order_Date) AS OrderMonth,
+        SUM(Sales) AS PreviousYearSales
+    FROM [dbo].[Sample - Superstore]
+    WHERE YEAR(Order_Date) = 2022
+    GROUP BY MONTH(Order_Date)
+)
+-- Combine data for both years and calculate percentage change
+SELECT 
+    SC.OrderMonth,
+    SC.CurrentYearSales,
+    PYS.PreviousYearSales,
+    CASE 
+        WHEN PYS.PreviousYearSales IS NULL THEN NULL
+        ELSE ((SC.CurrentYearSales - PYS.PreviousYearSales) * 100.0 / PYS.PreviousYearSales)
+    END AS SalesPercentageChange
+FROM SalesComparison SC
+LEFT JOIN PreviousYearSales PYS ON SC.OrderMonth = PYS.OrderMonth
+ORDER BY SC.OrderMonth;
